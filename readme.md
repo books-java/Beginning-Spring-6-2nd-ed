@@ -46,3 +46,11 @@ Normalizer) that represents a method by which we can transform (or â€œnormalizeâ
 names for our API, and lastly, an interface for our API (the MusicService) and a base
 class that contains an in-memory representation of our model (BaseMusicService).
 ![API classes](docs/image.png)
+
+# Run
+cd band-gateway-api
+mvn -pl band-gateway-api jetty:run
+http://localhost:8000/songs?artist=Therapy+Zeppelin
+curl "http://localhost:8080/vote?artist=Therapy+Zeppelin&song=Medium"
+curl "http://localhost:8080/vote?artist=Therapy+Zeppelin&song=Medium"
+curl "http://localhost:8080/songs?artist=Therapy+Zeppelin"
