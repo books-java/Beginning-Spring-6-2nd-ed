@@ -2,15 +2,16 @@ package com.bsg6.data.model;
 
 import java.util.*;
 
-public class Artist {
+public class Artist implements Comparable<Artist> {
     private String name;
-    private Map<String, Song> songs = new HashMap<>();
+    private int id;
 
     public Artist() {
     }
 
-    public Artist(String name) {
-        setName(name);
+    public Artist(int id, String name) {
+        this.id = id;
+        this.name = name;
     }
 
     public String getName() {
@@ -21,12 +22,12 @@ public class Artist {
         this.name = name;
     }
 
-    public Map<String, Song> getSongs() {
-        return songs;
+    public int getId() {
+        return id;
     }
 
-    public void setSongs(Map<String, Song> songs) {
-        this.songs = songs;
+    public void setId(int id) {
+        this.id = id;
     }
 
     @Override
@@ -36,19 +37,28 @@ public class Artist {
         if (!(o instanceof Artist))
             return false;
         Artist artist = (Artist) o;
-        return Objects.equals(getName(), artist.getName());
+        return getId() == artist.getId() &&
+                Objects.equals(
+                        getName().toLowerCase(),
+                        artist.getName().toLowerCase());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getName());
+        return Objects.hash(getId(), getName());
+    }
+
+    @Override
+    public int compareTo(Artist o) {
+        return o.getName().toLowerCase().compareTo(getName().toLowerCase());
     }
 
     @Override
     public String toString() {
-        return new StringJoiner(", ", Artist.class.getSimpleName() + "[", "]")
+        return new StringJoiner(", ",
+                Artist.class.getSimpleName() + "[", "]")
+                .add("id=" + id)
                 .add("name='" + name + "'")
-                .add("songs=" + songs)
                 .toString();
     }
 }

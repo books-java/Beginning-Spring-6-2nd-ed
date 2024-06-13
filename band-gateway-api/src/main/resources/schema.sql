@@ -1,0 +1,10 @@
+DROP INDEX IF EXISTS artist_name;
+DROP TABLE IF EXISTS ARTISTS;
+
+CREATE TABLE ARTISTS
+(
+  id int not null AUTO_INCREMENT,
+  name varchar(64) NOT NULL
+);
+CREATE UNIQUE INDEX  artist_name
+  ON ARTISTS(name);

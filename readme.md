@@ -49,9 +49,4 @@ class that contains an in-memory representation of our model (BaseMusicService).
 
 # Run
 mvn -pl band-gateway-api jetty:run
-http://localhost:8000/artists/threadbare+loaf/songs/someone+stole+the+flour
-
-http://localhost:8000/songs?artist=Therapy+Zeppelin
-curl "http://localhost:8080/vote?artist=Therapy+Zeppelin&song=Medium"
-curl "http://localhost:8080/vote?artist=Therapy+Zeppelin&song=Medium"
-curl "http://localhost:8080/songs?artist=Therapy+Zeppelin"
+http://localhost:8080/artist/1
