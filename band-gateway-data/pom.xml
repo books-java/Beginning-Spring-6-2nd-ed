@@ -13,6 +13,7 @@
 
     <artifactId>band-gateway-data</artifactId>
     <version>1.0</version>
+    <packaging>jar</packaging>
     <dependencies>
         <dependency>
             <groupId>com.h2database</groupId>

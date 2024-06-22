@@ -48,5 +48,7 @@ class that contains an in-memory representation of our model (BaseMusicService).
 ![API classes](docs/image.png)
 
 # Run
-mvn -pl band-gateway-api jetty:run
+cd .\band-gateway-api\
+./mvnw spring-boot:run    
+
 http://localhost:8080/artist/1
