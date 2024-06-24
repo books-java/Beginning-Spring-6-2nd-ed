@@ -1,57 +1,89 @@
 package com.bsg6.api;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ProblemDetail;
-import org.springframework.web.bind.annotation.*;
+import java.nio.charset.Charset;
+import java.util.List;
+import java.util.Optional;
 
-import com.bsg6.ArtistRepository;
+import javax.swing.Spring;
+
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.util.UriUtils;
+
+import com.bsg6.data.MusicRepository;
 import com.bsg6.data.model.Artist;
 import com.bsg6.exceptions.ArtistNotFoundException;
-
-import java.net.URI;
-import java.sql.SQLException;
-import java.util.List;
+import com.bsg6.exceptions.NoArtistNameSubmittedException;
 
 @RestController
 public class ArtistController {
-    private ArtistRepository service;
+    private MusicRepository service;
 
-    public ArtistController(ArtistRepository service) {
+    ArtistController(MusicRepository service) {
         this.service = service;
     }
 
-    @GetMapping("/artist/{id}")
-    Artist findArtistById(@PathVariable int id) throws SQLException {
-        return service.findArtistById(id);
+    String decode(Object data) {
+        return UriUtils.decode(data.toString(), Charset.defaultCharset());
     }
 
-    @GetMapping({ "/artist/search/{name}", "/artist/search/" })
-    Artist findArtistByName(
-            @PathVariable(required = false) String name) throws SQLException {
-        if (name != null) {
-            return service.findArtistByName(name);
+    @GetMapping(value = "/artists/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    Artist findArtistById(@PathVariable int id) {
+        Artist artist = service.findArtistById(id);
+        if (artist != null) {
+            return artist;
         } else {
-            throw new IllegalArgumentException("No artist name submitted");
+            throw new ArtistNotFoundException();
         }
     }
 
-    @PostMapping("/artist")
-    Artist saveArtist(@RequestBody Artist artist) throws SQLException {
-        return service.saveArtist(artist.getName());
+    /*
+     * if no artist name is provided, the exception path is
+     * always chosen and an IllegalArgumentException is thrown.
+     */
+    @GetMapping(value = { "/artists/search/{name}", "/artists/search/" }, produces = MediaType.APPLICATION_JSON_VALUE)
+    Artist findArtistByName(
+            @PathVariable(required = false) String name) {
+        if (name != null) {
+            Artist artist = service.findArtistByNameNoUpdate(decode(name));
+            if (artist != null) {
+                return artist;
+            } else {
+                throw new ArtistNotFoundException();
+            }
+        } else {
+            throw new NoArtistNameSubmittedException();
+        }
     }
 
-    @GetMapping({ "/artist/match/{name}", "/artist/match/" })
-    List<Artist> findArtistByMatchingName(
-            @PathVariable(required = false) String name) throws SQLException {
-        return service.findAllArtistsByName(name != null ? name : "");
+    /*
+     * this method serves to migrate the MusicService' findArtistByName()
+     * to something that accepts and returns an Optional
+     */
+    Optional<Artist> findArtistByName(Optional<String> name, boolean update) {
+        return Optional.of(service.findArtistByName(
+                decode(name.orElseThrow(NoArtistNameSubmittedException::new))));
     }
 
-    @ExceptionHandler(ArtistNotFoundException.class)
-    ProblemDetail handleArtistNotFound(ArtistNotFoundException e) {
-        ProblemDetail problemDetails = ProblemDetail
-                .forStatusAndDetail(HttpStatus.NOT_FOUND, e.getLocalizedMessage());
+    // @GetMapping({ "/artist/search/{name}", "/artist/search/" })
+    Artist findArtistByName(
+            @PathVariable(required = false) Optional<String> name) {
+        Optional<Artist> artistOptional = findArtistByName(name, false);
+        return artistOptional.orElseThrow(ArtistNotFoundException::new);
+    }
 
-        problemDetails.setTitle("Artist Not Found");
-        return problemDetails;
+    @PostMapping(value = "/artists", produces = MediaType.APPLICATION_JSON_VALUE)
+    Artist saveArtist(@RequestBody Artist artist) {
+        return service.findArtistByName(artist.getName());
+    }
+
+    @GetMapping(value = { "/artists/match/{name}", "/artists/match/" }, produces = MediaType.APPLICATION_JSON_VALUE)
+    List<String> findArtistByMatchingName(
+            @PathVariable(required = false) String name) {
+        return service.getMatchingArtistNames(name != null ? decode(name) : "");
     }
 }

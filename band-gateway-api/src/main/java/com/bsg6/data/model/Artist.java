@@ -7,6 +7,7 @@ import java.util.StringJoiner;
 
 public class Artist {
     Integer id;
+    
     @NonNull
     String name;
 

@@ -7,10 +7,13 @@ import java.util.StringJoiner;
 
 public class Song {
     Integer id;
+
     @NonNull
     Integer artistId;
+
     @NonNull
     String name;
+    
     int votes;
 
     public Song() {

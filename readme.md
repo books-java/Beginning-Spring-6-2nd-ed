@@ -46,7 +46,17 @@ Normalizer) that represents a method by which we can transform (or “normalize�
 names for our API, and lastly, an interface for our API (the MusicService) and a base
 class that contains an in-memory representation of our model (BaseMusicService).
 ![API classes](docs/image.png)
-
+# API Design
+## Services
+MusicService has five primary operations:
+• Retrieve songs for an artist, ordered by popularity (the most popular
+song is the better “hook”).
+• Retrieve song names for an artist (for use in autocompletion
+operations, which we’re anticipating a more full-featured application
+would use).
+• Retrieve a list of artist names (for use in autocompletion operations).
+• Record that a song exists.
+• Vote for a song as a hook for a given Artist.
 # Run
 cd .\band-gateway-api\
 ./mvnw spring-boot:run    

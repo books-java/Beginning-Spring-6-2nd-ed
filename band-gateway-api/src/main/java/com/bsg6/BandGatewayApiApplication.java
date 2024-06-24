@@ -15,7 +15,7 @@ public class BandGatewayApiApplication {
         SpringApplication.run(BandGatewayApiApplication.class, args);
     }
 
-    @Bean
+  /*   @Bean
     public DataSource dataSource() {
         try {
             var dbBuilder = new EmbeddedDatabaseBuilder();
@@ -26,5 +26,5 @@ public class BandGatewayApiApplication {
             //LOGGER.error("Embedded DataSource bean cannot be created!", e);
             return null;
         }
-    }
+    } */
 }
