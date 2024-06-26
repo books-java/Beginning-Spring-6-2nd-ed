@@ -4,6 +4,12 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.3.0</version>
+        <relativePath /> <!-- lookup parent from repository -->
+    </parent>
 
     <groupId>com.apress</groupId>
     <artifactId>band-gateway</artifactId>
@@ -16,7 +22,7 @@
         <maven.compiler.target>17</maven.compiler.target>
         <testngVersion>7.8.0</testngVersion>
         <springFrameworkVersion>6.1.1</springFrameworkVersion>
-        <springBootVersion>3.1.1</springBootVersion>
+        <springBootVersion>3.3.0</springBootVersion>
         <springDataBomVersion>2023.0.1</springDataBomVersion>
         <jacksonVersion>2.15.0</jacksonVersion>
         <h2Version>2.1.214</h2Version>
@@ -25,19 +31,12 @@
 
     <modules>
         <module>band-gateway-data</module>
+        <module>band-gateway-data-jpa</module>
         <module>band-gateway-api</module>
     </modules>
 
     <dependencyManagement>
         <dependencies>
-            <dependency>
-                <!-- Import dependency management from Spring Boot -->
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-dependencies</artifactId>
-                <version>${springBootVersion}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
             <dependency>
                 <groupId>org.testng</groupId>
                 <artifactId>testng</artifactId>
@@ -53,12 +52,8 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -91,18 +86,7 @@
                     </dependency>
                 </dependencies>
             </plugin>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>${springBootVersion}</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>repackage</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
+
         </plugins>
     </build>
 </project>

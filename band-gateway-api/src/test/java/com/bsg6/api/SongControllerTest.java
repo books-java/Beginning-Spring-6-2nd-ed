@@ -1,5 +1,12 @@
 package com.bsg6.api;
 
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
+
+import java.nio.charset.Charset;
+import java.util.List;
+import java.util.function.Consumer;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -14,14 +21,7 @@ import org.springframework.web.util.UriUtils;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import com.bsg6.data.model.Song;
-
-import java.nio.charset.Charset;
-import java.util.List;
-import java.util.function.Consumer;
-
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
+import com.bsg6.data.jpa.model.Song;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class SongControllerTest extends AbstractTestNGSpringContextTests {

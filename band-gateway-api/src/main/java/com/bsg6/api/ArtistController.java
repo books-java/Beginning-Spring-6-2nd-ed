@@ -14,16 +14,16 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriUtils;
 
-import com.bsg6.data.MusicRepository;
-import com.bsg6.data.model.Artist;
+import com.bsg6.data.jpa.model.Artist;
+import com.bsg6.data.jpa.service.MusicService;
 import com.bsg6.exceptions.ArtistNotFoundException;
 import com.bsg6.exceptions.NoArtistNameSubmittedException;
 
 @RestController
 public class ArtistController {
-    private MusicRepository service;
+    private MusicService service;
 
-    ArtistController(MusicRepository service) {
+    ArtistController(MusicService service) {
         this.service = service;
     }
 
@@ -32,8 +32,8 @@ public class ArtistController {
     }
 
     @GetMapping(value = "/artists/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    Artist findArtistById(@PathVariable int id) {
-        Artist artist = service.findArtistById(id);
+    Artist findArtistById(@PathVariable("id") int id) {
+        Artist artist = service.getArtistById(id);
         if (artist != null) {
             return artist;
         } else {
@@ -47,9 +47,9 @@ public class ArtistController {
      */
     @GetMapping(value = { "/artists/search/{name}", "/artists/search/" }, produces = MediaType.APPLICATION_JSON_VALUE)
     Artist findArtistByName(
-            @PathVariable(required = false) String name) {
+            @PathVariable(name = "name", required = false) String name) {
         if (name != null) {
-            Artist artist = service.findArtistByNameNoUpdate(decode(name));
+            Artist artist = service.findArtistByName(decode(name));
             if (artist != null) {
                 return artist;
             } else {
@@ -78,7 +78,7 @@ public class ArtistController {
 
     @PostMapping(value = "/artists", produces = MediaType.APPLICATION_JSON_VALUE)
     Artist saveArtist(@RequestBody Artist artist) {
-        return service.findArtistByName(artist.getName());
+        return service.getArtist(artist.getName());
     }
 
     @GetMapping(value = { "/artists/match/{name}", "/artists/match/" }, produces = MediaType.APPLICATION_JSON_VALUE)

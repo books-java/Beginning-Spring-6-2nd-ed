@@ -6,11 +6,12 @@ import static org.testng.Assert.assertNotNull;
 
 import java.nio.charset.Charset;
 import java.util.List;
-
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.data.util.Streamable;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,15 +21,19 @@ import org.springframework.web.util.UriUtils;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-import com.bsg6.data.model.Artist;
+import com.bsg6.data.jpa.model.Artist;
+import com.bsg6.data.jpa.repository.ArtistRepository;
+import org.springframework.test.context.jdbc.Sql;
+import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.*;
 
+//@Sql(scripts = { "/schema.sql","/data.sql"}, executionPhase = BEFORE_TEST_CLASS)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class ArtistControllerTest extends AbstractTestNGSpringContextTests {
         @Autowired
         private TestRestTemplate restTemplate;
-        
+
         @Autowired
-        JdbcTemplate jdbcTemplate;
+        ArtistRepository artistRepository;
 
         String encode(Object data) {
                 return UriUtils.encode(data.toString(),
@@ -36,14 +41,20 @@ public class ArtistControllerTest extends AbstractTestNGSpringContextTests {
         }
 
         List<Object[]> getArtists() {
-                return jdbcTemplate.query(
-                                "SELECT id, name FROM artists",
-                                (rs, rowNum) -> new Object[] {
-                                                rs.getInt("id"),
-                                                rs.getString("name")
-                                }
-
-                );
+                /*
+                 * return jdbcTemplate.query(
+                 * "SELECT id, name FROM artists",
+                 * (rs, rowNum) -> new Object[] {
+                 * rs.getInt("id"),
+                 * rs.getString("name")
+                 * }
+                 * 
+                 * );
+                 */
+                return Streamable.of(artistRepository.findAll())
+                                .stream()
+                                .map(A -> new Object[] { A.getId(), A.getName() })
+                                .collect(Collectors.toList());
         }
 
         @DataProvider
@@ -62,13 +73,12 @@ public class ArtistControllerTest extends AbstractTestNGSpringContextTests {
                 if (id != -1) {
                         assertEquals(response.getStatusCode(), HttpStatus.OK);
                         Artist artist = response.getBody();
-                        Artist data = new Artist(id, name);
 
-                        assertEquals(artist.getId(), data.getId());
+                        assertEquals(artist.getId(), id);
                         // note: the corrected service returns the *proper* name
                         assertEquals(
                                         artist.getName().toLowerCase(),
-                                        data.getName().toLowerCase());
+                                        name.toLowerCase());
                 } else {
                         assertEquals(response.getStatusCode(), HttpStatus.NOT_FOUND);
                 }
@@ -86,12 +96,11 @@ public class ArtistControllerTest extends AbstractTestNGSpringContextTests {
                         } else {
                                 assertEquals(response.getStatusCode(), HttpStatus.OK);
                                 Artist artist = response.getBody();
-                                Artist data = new Artist(id, name);
 
                                 // note: the corrected service returns the *proper* name
                                 assertEquals(
                                                 artist.getName().toLowerCase(),
-                                                data.getName().toLowerCase());
+                                                name.toLowerCase());
                         }
                 } else {
                         assertEquals(
@@ -139,16 +148,16 @@ public class ArtistControllerTest extends AbstractTestNGSpringContextTests {
 
         @Test(dataProvider = "artistSearches")
         public void testSearches(String name, int count) {
-                ParameterizedTypeReference<List<Artist>> type = new ParameterizedTypeReference<>() {
+                ParameterizedTypeReference<List<String>> type = new ParameterizedTypeReference<>() {
                 };
                 String url = "/artists/match/" + encode(name);
-                ResponseEntity<List<Artist>> response = restTemplate.exchange(
+                ResponseEntity<List<String>> response = restTemplate.exchange(
                                 url,
                                 HttpMethod.GET,
                                 null,
                                 type);
                 assertEquals(response.getStatusCode(), HttpStatus.OK);
-                List<Artist> artists = response.getBody();
+                List<String> artists = response.getBody();
                 assertNotNull(artists);
                 assertEquals(artists.size(), count);
         }
@@ -160,7 +169,7 @@ public class ArtistControllerTest extends AbstractTestNGSpringContextTests {
         @Test(dependsOnMethods = "testSearches")
         public void testSaveArtist() {
                 String url = "/artists";
-                Artist newArtist = new Artist(0, "The Broken Keyboards");
+                Artist newArtist = new Artist("The Broken Keyboards");
 
                 ResponseEntity<Artist> response = restTemplate.postForEntity(
                                 url,
