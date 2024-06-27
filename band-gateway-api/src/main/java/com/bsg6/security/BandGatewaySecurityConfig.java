@@ -18,7 +18,7 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 @EnableWebSecurity
 public class BandGatewaySecurityConfig {
- @Bean
+/*  @Bean
     public UserDetailsService userDetailsService() {
         InMemoryUserDetailsManager manager = new InMemoryUserDetailsManager();
         PasswordEncoder encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
@@ -45,5 +45,5 @@ public class BandGatewaySecurityConfig {
             .csrf(AbstractHttpConfigurer::disable)
             .httpBasic(withDefaults());
         return http.build();
-    }
+    } */
 }
