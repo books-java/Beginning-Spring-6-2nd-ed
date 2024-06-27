@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriUtils;
 
-import com.bsg6.data.jpa.model.Artist;
-import com.bsg6.data.jpa.service.MusicService;
+import com.bsg6.data.mongodb.model.Artist;
+import com.bsg6.data.mongodb.service.MusicService;
 import com.bsg6.exceptions.ArtistNotFoundException;
 import com.bsg6.exceptions.NoArtistNameSubmittedException;
 
@@ -35,9 +35,9 @@ public class ArtistController {
     List<Artist> getArtists() {
         return service.getArtists();
     }
-
+    
     @GetMapping(value = "/artists/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    Artist findArtistById(@PathVariable("id") int id) {
+    Artist findArtistById(@PathVariable("id") String id) {
         Artist artist = service.getArtistById(id);
         if (artist != null) {
             return artist;

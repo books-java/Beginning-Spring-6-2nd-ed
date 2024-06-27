@@ -7,6 +7,7 @@ import org.springframework.data.repository.CrudRepository;
 
 import com.bsg6.data.model.BaseArtist;
 
+// TODO consider using ListCrudRepository 
 public interface BaseArtistRepository<T extends BaseArtist<ID>, ID>
         extends CrudRepository<T, ID> {
             

@@ -1,5 +1,6 @@
 package com.bsg6.data.service;
 
+import org.springframework.data.util.Streamable;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bsg6.data.model.BaseArtist;
@@ -48,6 +49,13 @@ public abstract class BaseMusicService<A extends BaseArtist<ID>, S extends BaseS
                     songRepository.save(entity);
                     return entity;
                 });
+    }
+
+    @Transactional
+    public List<A> getArtists() {
+        return Streamable.of(artistRepository.findAll())
+                .stream()
+                .collect(Collectors.toList());
     }
 
     @Transactional

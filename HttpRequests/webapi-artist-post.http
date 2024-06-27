@@ -1,0 +1,18 @@
+### Configure a variable for the web service base address.### Configure a variable for the web service base address.
+@base_address = http://localhost:8080/artists
+
+###
+POST {{base_address}}
+Content-Type: application/json
+
+{
+"name":"Threadbare Loaf"
+}
+
+###
+POST {{base_address}}
+Content-Type: application/json
+
+{
+"name":"Therapy Zeppelin"
+}

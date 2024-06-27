@@ -32,7 +32,9 @@
     <modules>
         <module>band-gateway-data</module>
         <module>band-gateway-data-jpa</module>
+        <module>band-gateway-data-mongo</module>
         <module>band-gateway-api</module>
+        <module>band-gateway-api-mongo</module>
     </modules>
 
     <dependencyManagement>

@@ -57,6 +57,15 @@ would use).
 * Record that a song exists.
 * Vote for a song as a hook for a given Artist.
 # Run
+# JPA
 ./mvnw install  -D maven.test.skip=true ; ./mvnw spring-boot:run -pl band-gateway-api
 
+
+
+## Mongo
+docker run -d -p 27017:27017 — name band-gateway-mongodb mongo:latest
+
+./mvnw install  -D maven.test.skip=true ; ./mvnw spring-boot:run -pl band-gateway-api-mongo
+
+# Access
 http://localhost:8080/artist/1
