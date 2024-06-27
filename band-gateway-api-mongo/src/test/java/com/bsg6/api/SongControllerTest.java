@@ -20,6 +20,7 @@ import org.springframework.web.util.UriUtils;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import com.bsg6.data.mongodb.model.Artist;
 import com.bsg6.data.mongodb.model.Song;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -29,9 +30,9 @@ public class SongControllerTest extends AbstractTestNGSpringContextTests {
 
     @Autowired
     private TestRestTemplate restTemplate;
-    
-    @Autowired
-    JdbcTemplate jdbcTemplate;
+
+    // @Autowired
+    // JdbcTemplate jdbcTemplate;
 
     private Object[][] model = new Object[][] {
             { "Threadbare Loaf", "Someone Stole the Flour", 4 },
@@ -42,9 +43,9 @@ public class SongControllerTest extends AbstractTestNGSpringContextTests {
 
     @BeforeMethod
     void clearDatabase() {
-        jdbcTemplate.update("DELETE FROM songs");
-        jdbcTemplate.update("DELETE FROM artists");
-        populateData();
+        // jdbcTemplate.update("DELETE FROM songs");
+        // jdbcTemplate.update("DELETE FROM artists");
+        // populateData();
     }
 
     void iterateOverModel(Consumer<Object[]> consumer) {
@@ -71,6 +72,24 @@ public class SongControllerTest extends AbstractTestNGSpringContextTests {
                 assertEquals(response.getStatusCode(), HttpStatus.OK);
             }
         });
+    }
+
+    @Test
+    public void testSaveSongsRequiresLogin() throws Exception {
+        Artist artist = new Artist("Threadbare Loaf");
+        Song song = new Song(artist, "Someone Stole the Flour");
+        ResponseEntity<Song> response = restTemplate.postForEntity("/songs", song, Song.class);
+        assertEquals(response.getStatusCode(), HttpStatus.UNAUTHORIZED);
+    }
+
+    @Test
+    public void testSaveSongsWithAuth() throws Exception {
+        Artist artist = new Artist("Threadbare Loaf");
+        Song song = new Song(artist, "Someone Stole the Flour");
+        ResponseEntity<Song> response = restTemplate.withBasicAuth("admin",
+                "admin123").postForEntity("/songs", song, Song.class);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
     }
 
     @Test

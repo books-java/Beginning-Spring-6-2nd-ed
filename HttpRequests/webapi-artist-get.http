@@ -3,6 +3,7 @@
 
 ###
 POST {{base_address}}
+Authorization: Basic user:user123
 Content-Type: application/json
 
 {
@@ -11,6 +12,7 @@ Content-Type: application/json
 
 ###
 POST {{base_address}}
+Authorization: Basic user:user123
 Content-Type: application/json
 
 {
@@ -19,15 +21,17 @@ Content-Type: application/json
 
 ###
 GET {{base_address}}
+Authorization: Basic user:user123
 
 ###
 GET {{base_address}}/1
-
+Authorization: Basic user:user123
 ###
 GET {{base_address}}/search/Threadbare%20Loaf
-
+Authorization: Basic user:user123
 ###
 GET {{base_address}}/match/Threadbare
-
+Authorization: Basic user:user123
 ###
 GET {{base_address}}/match/
+Authorization: Basic user:user123

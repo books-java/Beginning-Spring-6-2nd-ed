@@ -22,6 +22,7 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import com.bsg6.data.mongodb.model.Artist;
+import com.bsg6.data.mongodb.model.Song;
 import com.bsg6.data.mongodb.repository.ArtistRepository;
 
 //@Sql(scripts = { "/schema.sql","/data.sql"}, executionPhase = BEFORE_TEST_CLASS)
@@ -62,6 +63,7 @@ public class ArtistControllerTest extends AbstractTestNGSpringContextTests {
                 artists.add(new Object[] { -1, "Not A Band" });
                 return artists.toArray(new Object[0][]);
         }
+
 
         // TODO fix this
         @Test(dataProvider = "artistData")
